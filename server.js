@@ -5,34 +5,43 @@ const path        = require('path');
 const bodyParser  = require('body-parser');
 const dotenv      = require('dotenv')
 const fileUpload  = require('express-fileupload');
-
-const puppeteer  = require('puppeteer');
-
+const config      = require('./config/facebook'); 
+const puppeteer   = require('puppeteer');
 
 dotenv.config();
 global.express     = express;
 global.path        = path;
+global.config      = config;
+
+
+const OPEND_BROWSER = eval(process.env.OPEND_BROWSER);
 
 (async () => {
-    const browser = await puppeteer.launch({headless: true, defaultViewport: null,  args: [
+    const browser = await puppeteer.launch({headless: OPEND_BROWSER, defaultViewport: null,  args: [
           '--no-sandbox',
           '--disable-setuid-sandbox',
         ],
     });
 
     global.page = await browser.newPage();
-    await page.setRequestInterception(true);
-    page.on('request', async (request) => {
-        if (['image', 'stylesheet', 'font'].indexOf(request.resourceType()) !== -1) {
-            request.abort();
-        } else {
-            request.continue();
-        }
-    });
+    // await page.setRequestInterception(true);
+    await page.setCookie(...config.COOKIE_FACEBOOK)
+    await page.goto(process.env.URL_FACEBOOK)
+    await page.screenshot({
+        path: 'facebook.png'
+    })
+    await browser.close()
+
+    // page.on('request', async (request) => {
+    //     if (['image', 'stylesheet', 'font'].indexOf(request.resourceType()) !== -1) {
+    //         request.abort();
+    //     } else {
+    //         request.continue();
+    //     }
+    // });
 
 
 })();
-
 
 app.use(bodyParser.urlencoded({limit: '10mb', extended: true }));
 app.use(bodyParser.json({ limit: '10mb', extended: true }));
