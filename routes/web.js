@@ -1,9 +1,9 @@
 const router   = express.Router();
 
-const TranslateController = require('../app/Controllers/TranslateController');
+const LoginController = require('../app/controllers/LoginController');
 
-router.get('/', TranslateController.index);
-router.post('/translate', TranslateController.translate);
+router.get('/', LoginController.index);
+router.post('/translate', LoginController.postIndex);
 
 
 module.exports = router;
