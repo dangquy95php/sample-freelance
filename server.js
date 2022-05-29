@@ -54,16 +54,16 @@ app.set('port', process.env.PORT || 80);
 // app.use(flash());
 
 // include router
-const router = require('./routes/web');
+const web = require('./routes/web');
 app.use((req, res, next) => {
     return next();
 });
 
-app.use('/', router);
+app.use('/', web);
 app.get('*', function(req, res){
     return res.render('404');
 });
 
 app.listen(app.get('port'), () => {
-    console.log(`Server running on port`, app.get('port'));
+    console.log(`http:localhost: Server running on port`, app.get('port'));
 });
